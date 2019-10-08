@@ -1,0 +1,6 @@
+# These are excluded from git
+
+.idea
+*.iml
+node_modules/
+public
