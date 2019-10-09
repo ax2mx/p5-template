@@ -1,7 +1,6 @@
 # P5-template
 
-This is a p5.js template to start creative coding outside Processing PDE or p5.js Editor.
-
+This package is supposed to be a little helper in starting creative coding with p5.js outside Processing or p5.js Editor. The package exports p5 sketch in [instance mode](https://github.com/processing/p5.js/wiki/p5.js-overview#instantiation--namespace), so all p5 functions are bound up in a single variable instead of polluting your global namespace `¯\_(ツ)_/¯`. 
 
 
 ## Usage
@@ -14,13 +13,13 @@ cd p5-template
 npm install
 ```
 
-Start script:
+Run script:
 
 ```bash
-# Build production bundle
-npm run build
-# Developing with livereload
+# Start developing with livereload
 npm run dev
+# or build production bundle
+npm run build
 ```
 
 Enjoy your coding (^-^)
