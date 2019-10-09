@@ -1,7 +1,15 @@
-/*---------------------------------------------------------------------------*\
-  _reset.css
+/* ==========================================================================
+   Basic style rules
+   ========================================================================== */
 
-\*---------------------------------------------------------------------------*/
+/**
+ * This combination of reset.css and normalaize.css can be really handy
+ * in many ways. If you don't need it you're free to exclude from bundle.
+ */
+
+
+/* RESET
+   ========================================================================== */
 
 /**
  * As well as using normalize.css, it is often advantageous to remove all
@@ -42,15 +50,10 @@ ins {
     border-bottom: 1px solid;
 }
 
-/*---------------------------------------------------------------------------*\
-  _box-sizing.scss
 
-  Глобльная установка `box-sizing` в значение `border-box`.
-\*---------------------------------------------------------------------------*/
-/**
- * css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice
- * paulirish.com/2012/box-sizing-border-box-ftw
- */
+/* BOX-SIZING
+   ========================================================================== */
+
 html {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -58,17 +61,13 @@ html {
 }
 
 
-/*---------------------------------------------------------------------------*\
-  _normalize.scss
-
-  https://github.com/csswizardry/normalize.css/blob/master/normalize.css
-  https://github.com/primer/primer/blob/master/modules/primer-base/lib/normalize.scss
-  Нормализация некоторых базовых свойств
-\*---------------------------------------------------------------------------*/
+/* NORMALIZE
+   ========================================================================== */
 
 
-/* Документ
+/* Document
 -----------------------------------------------------------------------------*/
+
 /**
  * 1. Correct the line height in all browsers.
  * 2. Prevent adjustments of font size after orientation changes in iOS.
@@ -80,8 +79,9 @@ html {
 }
 
 
-/* Разделы
+/* Sections
 -----------------------------------------------------------------------------*/
+
 /**
  * Remove the margin in all browsers.
  */
@@ -118,8 +118,9 @@ h1 {
 }
 
 
-/* Группировка содержимого
+/* Content grouping
 -----------------------------------------------------------------------------*/
+
 /**
  * Add the correct display in IE 9-.
  * 1. Add the correct display in IE.
@@ -150,8 +151,9 @@ pre {
 }
 
 
-/* Семантика на уровне текста
+/* Text semantics
 -----------------------------------------------------------------------------*/
+
 /**
  * 1. Remove the gray background on active links in IE 10.
  * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.
@@ -226,7 +228,7 @@ sup {
 }
 
 
-/* Встраевоемое содержимое
+/* Embedded content
 -----------------------------------------------------------------------------*/
 img {
   max-width: 100%;
@@ -264,8 +266,9 @@ audio:not([controls]) {
 }
 
 
-/* Формы
+/* Forms
 -----------------------------------------------------------------------------*/
+
 /**
  * 1. Change the font styles in all browsers.
  * 2. Remove the margin in Firefox and Safari.
@@ -423,7 +426,8 @@ textarea {
   font: inherit; /* 2 */
 }
 
-/* Прочее
+
+/* Misc
 -----------------------------------------------------------------------------*/
 table {
   border-collapse: collapse;
@@ -445,8 +449,10 @@ summary {
   display: list-item;
 }
 
-/* Прочие элементы
+
+/* Other
 -----------------------------------------------------------------------------*/
+
 /**
  * Add the correct display in IE 9-.
  */
