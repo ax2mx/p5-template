@@ -1,21 +1,27 @@
 export const sketch = (_) => {
-    let img;
-    let file;
-    let c;
-    let cnv;
+    let img, imgSrc, file;
+    let aspect;
+
+    let x, y, w, h;
+    let selection;
+    let drawMode = false;
 
     document.addEventListener("keydown", (e) => {
         if (e.code === "Escape") {
-            hasSample = false;
+            drawMode = false;
         }
 
         if (e.code === "KeyS" && (event.ctrlKey || event.metaKey)) {
             e.preventDefault();
-            _.save('myCanvas.jpg');
+            _.save('myCanvas.png');
             console.log("Saved!");
-
         }
 
+        if (e.code === "Backspace") {
+            drawMode = false;
+            _.clear();
+            img = imgSrc.get();
+        }
     });
 
     let fileUploader = document.createElement("input");
@@ -26,95 +32,102 @@ export const sketch = (_) => {
     document.body.appendChild(fileUploader);
 
     fileUploader.addEventListener("change", (e) => {
-        let src = loadLocal(e.target);
-        hasSample = false;
-        // console.log(src);
-
-        _.loadImage(src, data => {
-                    // _.image(data, 0, 0, _.windowWidth, _.windowHeight);
-                    _.background(data);
-                    img = data;
-                });
+        file = loadLocal(e.target);
+        imgSrc = _.loadImage(file);
+        drawMode = false;
+        _.clear();
+        imgSrc.resize(_.windowWidth, _.windowWidth * aspect);
+        img = _.loadImage(file);
+        // img.resize(_.windowWidth, _.windowHeight);
+        // img = imgSrc.get();
     });
-
-
-    function toBase64(arr) {
-        arr = new Uint8Array(arr); //if it's an ArrayBuffer
-        return btoa(
-            arr.reduce((data, byte) => data + String.fromCharCode(byte), '')
-        );
-    }
 
     let loadLocal = (input) => {
         let file = input.files[0];
-        return URL.createObjectURL(file);
+        let url = URL.createObjectURL(file)
+        getFileSize(url);
+        return url;
     }
 
-    let readFile = async (input) => {
-        let file = input.files[0];
-
-        let reader = new FileReader();
-
-        let src = await URL.createObjectURL(file);
+    let getFileSize = (url) => {
+        let img = new Image();
+        img.src = url;
+        img.onload = function(){
+            aspect = img.height / img.width;
+        }
     }
 
+    // Preload initial image
     _.preload = () => {
-        img = _.loadImage('https://upload.wikimedia.org/wikipedia/commons/7/73/God2-Sistine_Chapel.png');
+        let url = 'https://upload.wikimedia.org/wikipedia/commons/7/73/God2-Sistine_Chapel.png';
+        getFileSize(url);
+        imgSrc = _.loadImage(url);
     }
 
+    // Setup initial canvas
     _.setup = () => {
-        cnv = _.createCanvas(_.windowWidth, _.windowHeight);
-        _.noStroke();
+        _.createCanvas(_.windowWidth, _.windowHeight);
+        _.rectMode(_.CORNERS);
+        imgSrc.resize(_.windowWidth, _.windowWidth * aspect);
+        img = imgSrc.get();
+    };
 
-        if (img) {
-            _.background(img);
+    // Iteratively draw
+    _.draw = () => {
+        _.image(img,  0, 0);
+        if (_.mouseIsPressed) {
+            if (drawMode) {
+                let dX = Math.abs(_.mouseX - _.pmouseX);
+                let dY = Math.abs(_.mouseY - _.pmouseY);
+                let steps = Math.max(dX, dY)/2;
+
+                if (dX && dY) {
+                    for (let i = 0; i < steps; i++) {
+                        let lerpX = _.lerp(_.pmouseX, _.mouseX, (1.0/steps) * i);
+                        let lerpY = _.lerp(_.pmouseY, _.mouseY, (1.0/steps) * i);
+                        _.image(selection, lerpX - x, lerpY - y);
+                    }
+                    img = _.get();
+                }
+            } else {
+                _.stroke("#FFFFFF");
+                _.strokeWeight(1);
+                _.noFill();
+                _.rect(x, y, _.mouseX, _.mouseY);
+            }
         }
     };
 
-    let startX, startY, endX, endY;
-    let hasSample = false;
-
     _.mousePressed = () => {
-        if (!hasSample) {
-            startX = _.mouseX;
-            startY = _.mouseY;
-            console.log(startX,startY,_.mouseX,_.mouseY);
+        if (!drawMode) {
+            x = _.mouseX;
+            y = _.mouseY;
+        } else {
+            x = _.mouseX - x;
+            y = _.mouseY - y;
         }
     }
 
     _.mouseReleased = () => {
-        endX = _.mouseX;
-        endY = _.mouseY;
-        if ((startX !== endX) && (startX !== endX) && !hasSample) {
-            getSample()
-            hasSample = true;
+        if(_.mouseX !== x && _.mouseY !== y && !drawMode) {
+            w = Math.abs(x - _.mouseX);
+            h = Math.abs(y - _.mouseY);
+            if (_.mouseX < x) x =  _.mouseX;
+            if (_.mouseY < y) y =  _.mouseY;
+            selection = img.get(x, y, w, h);
+            drawMode = true;
+        } else {
+            drawMode = false;
         }
     }
 
-    function getSample() {
-        c = img.get(startX, startY, Math.abs(endX - startX), Math.abs(endY - startY));
-
-        hasSample = true;
-    }
-
-    _.mouseDragged = () => {
-        if (!hasSample) {
-        }
-    }
-
-    _.draw = () => {
-        if (hasSample && _.mouseIsPressed) {
-            _.image(c, _.mouseX, _.mouseY);
-        }
-    };
-
-    // Windows resize event handling
+    // Window resize event handling
     _.windowResized = () => {
         _.clear();
-        _.resizeCanvas(_.windowWidth, _.windowHeight);
-        if (img) {
-            _.background(img);
-        }
+        _.resizeCanvas(_.windowWidth, _.windowWidth * aspect);
+        drawMode = false;
+        img = imgSrc.get();
+        img.resize(_.windowWidth, _.windowWidth * aspect);
         _.draw();
     }
 };
