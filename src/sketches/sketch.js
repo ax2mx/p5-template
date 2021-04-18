@@ -38,8 +38,6 @@ export const sketch = (_) => {
         _.clear();
         imgSrc.resize(_.windowWidth, _.windowWidth * aspect);
         img = _.loadImage(file);
-        // img.resize(_.windowWidth, _.windowHeight);
-        // img = imgSrc.get();
     });
 
     let loadLocal = (input) => {
@@ -67,6 +65,8 @@ export const sketch = (_) => {
     // Setup initial canvas
     _.setup = () => {
         _.createCanvas(_.windowWidth, _.windowHeight);
+        _.noTint();
+        _.pixelDensity(1); // Prevents image degradation on get() call in draw()
         _.rectMode(_.CORNERS);
         imgSrc.resize(_.windowWidth, _.windowWidth * aspect);
         img = imgSrc.get();
@@ -79,7 +79,7 @@ export const sketch = (_) => {
             if (drawMode) {
                 let dX = Math.abs(_.mouseX - _.pmouseX);
                 let dY = Math.abs(_.mouseY - _.pmouseY);
-                let steps = Math.max(dX, dY)/2;
+                let steps = Math.max(dX, dY);
 
                 if (dX && dY) {
                     for (let i = 0; i < steps; i++) {
