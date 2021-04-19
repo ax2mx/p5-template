@@ -24,14 +24,15 @@ export const sketch = (_) => {
         }
     });
 
-    let fileUploader = document.createElement("input");
-    fileUploader.type = "file";
-    fileUploader.style.position = "fixed";
-    fileUploader.style.top = 0;
-    fileUploader.style.left = 0;
-    document.body.appendChild(fileUploader);
+    let uploader = document.createElement("input");
+    uploader.type = "file";
+    uploader.accept = ".jpg, .jpeg, .png, .gif";
+    uploader.style.position = "fixed";
+    uploader.style.bottom = "0";
+    uploader.style.left = "0";
+    document.body.appendChild(uploader);
 
-    fileUploader.addEventListener("change", (e) => {
+    uploader.addEventListener("change", (e) => {
         file = loadLocal(e.target);
         imgSrc = _.loadImage(file);
         drawMode = false;
@@ -50,7 +51,7 @@ export const sketch = (_) => {
     let getFileSize = (url) => {
         let img = new Image();
         img.src = url;
-        img.onload = function(){
+        img.onload = () => {
             aspect = img.height / img.width;
         }
     }
@@ -81,14 +82,13 @@ export const sketch = (_) => {
                 let dY = Math.abs(_.mouseY - _.pmouseY);
                 let steps = Math.max(dX, dY);
 
-                if (dX && dY) {
-                    for (let i = 0; i < steps; i++) {
-                        let lerpX = _.lerp(_.pmouseX, _.mouseX, (1.0/steps) * i);
-                        let lerpY = _.lerp(_.pmouseY, _.mouseY, (1.0/steps) * i);
-                        _.image(selection, lerpX - x, lerpY - y);
-                    }
-                    img = _.get();
+                for (let i = 0; i < steps; i++) {
+                    let lerpX = _.lerp(_.pmouseX, _.mouseX, (1.0/steps) * i);
+                    let lerpY = _.lerp(_.pmouseY, _.mouseY, (1.0/steps) * i);
+                    _.image(selection, lerpX - x, lerpY - y);
                 }
+
+                img = _.get();
             } else {
                 _.stroke("#FFFFFF");
                 _.strokeWeight(1);
